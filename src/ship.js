@@ -1,7 +1,7 @@
 
 
 var ship;
-var ship_tween;
+var _ship_tween;
 
 function create_ship(game) {
 
@@ -13,18 +13,20 @@ function create_ship(game) {
         new Phaser.Point(0, 0)
     ]);
 
-    var graphics = game.add.graphics(0, 0);
+    var graphics = new Phaser.Graphics(game, 0, 0);
     graphics.beginFill(0x6633BB);
     graphics.drawPolygon(ship_polygon.points);
+    graphics.pivot.setTo(16, 16);
 
     ship = game.add.sprite(400, 300);
     ship.addChild(graphics);
-    ship.pivot.x = 16;
-    ship.pivot.y = 16;
+    ship.anchor.setTo(0.5, 0.5);
 
     game.physics.arcade.enable(ship, Phaser.Physics.ARCADE);
-    ship_tween = game.add.tween(ship);
-    return (ship);
+    ship.body.collideWorldBounds = true;
+
+    _ship_tween = game.add.tween(ship);
+    return ship;
 }
 
 
@@ -60,12 +62,12 @@ function _set_ship_direction(game) {
     if (diff > 180)
         angle += (angle < ship.angle) ? 360 : -360;
 
-    if (angle !== null && ship_tween.last_dir !== angle) {
-        ship_tween.stop();
-        ship_tween = game.add.tween(ship);
-        ship_tween.last_dir = angle;
-        ship_tween.to({angle: angle}, 200, Phaser.Easing.Quadratic.InOut);
-        ship_tween.start();
+    if (angle !== null && _ship_tween.last_dir !== angle) {
+        _ship_tween.stop();
+        _ship_tween = game.add.tween(ship);
+        _ship_tween.last_dir = angle;
+        _ship_tween.to({angle: angle}, 200, Phaser.Easing.Quadratic.InOut);
+        _ship_tween.start();
     }
 }
 

@@ -9,28 +9,18 @@ function preload() {
 
 
 function create() {
-
     game.physics.startSystem(Phaser.Physics.ARCADE);
 
-    //world size
-    game.world.bounds.setTo(0, 0, 800, 600);
-
-    game.physics.startSystem(Phaser.Physics.P2JS);
-    game.physics.p2.restitution = 0.8;
-
     background = game.add.sprite(0, 0,'background');
-    game.physics.enable(background, Phaser.Physics.ARCADE);
-    background.body.velocity.x = 20;
-
-    game.physics.p2.enable(background);
-    background.body.collideWorldBounds = true;
-
     var ship = create_ship(game);
 
-    game.physics.p2.enable(ship);
-    ship.checkWorldBounds = true;
-    ship.events.onOutOfBounds.add(shipOut.bind(null, ship), this);
+    game.physics.enable([background], Phaser.Physics.ARCADE);
+    //game.physics.arcade.enableBody(ship);
 
+    background.body.velocity.x = 20;
+    background.body.collideWorldBounds = true;
+
+    ship.events.onOutOfBounds.add(shipOut.bind(null, ship), this);
 }
 
 function shipOut(ship) {
@@ -40,14 +30,18 @@ function shipOut(ship) {
     var style = { font: "65px Arial", fill: "#ff0044", align: "center" };
     var text = game.add.text(game.world.centerX, game.world.centerY, "- phaser -\nwith a sprinkle of\npixi dust", style);
     text.anchor.set(0.5);
-   // ship.reset(400, 300);
 }
 
 function update() {
     if (alive != 0) {
         update_ship(game);
     }
-    }
+}
 
+function render() {
 
-var game = new Phaser.Game(800, 600, Phaser.AUTO, 'Bubble screen', { preload: preload,  create: create, update: update  });
+    //game.debug.body(ship);
+}
+
+var game = new Phaser.Game(800, 600, Phaser.AUTO, 'Bubble screen',
+    { preload: preload,  create: create, update: update, render: render});
