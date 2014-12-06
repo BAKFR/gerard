@@ -9,17 +9,15 @@ function preload() {
 
 
 function create() {
-    game.physics.startSystem(Phaser.Physics.ARCADE);
+    game.physics.startSystem(Phaser.Physics.NINJA);
+    game.physics.ninja.gravity = 0;
 
     background = game.add.sprite(0, 0,'background');
-    var ship = create_ship(game);
-
-    game.physics.enable([background], Phaser.Physics.ARCADE);
-    //game.physics.arcade.enableBody(ship);
-
+    game.physics.enable(background);
     background.body.velocity.x = 20;
     background.body.collideWorldBounds = true;
 
+    var ship = create_ship(game);
     ship.events.onOutOfBounds.add(shipOut.bind(null, ship), this);
 }
 
@@ -32,15 +30,45 @@ function shipOut(ship) {
     text.anchor.set(0.5);
 }
 
+var rock;
+
+function _generate_rock() {
+
+    var size = game.rnd.integerInRange(20, 250);
+    var x = game.rnd.integerInRange(0, 800);
+    var y = game.rnd.integerInRange(0, 600);
+
+    var graphics = new Phaser.Graphics(game, 0, 0);
+    graphics.beginFill(0x8B4513);
+    graphics.drawCircle(size, size, size);
+    graphics.pivot.setTo(size   , size);
+
+    rock = game.add.sprite(x, y);
+    rock.addChild(graphics);
+    rock.anchor.setTo(0.5, 0.5);
+    //rock.height = size;
+    //rock.width = size;
+    game.physics.ninja.enableCircle(rock, size / 2);
+}
+
 function update() {
     if (alive != 0) {
         update_ship(game);
+    }
+    if (!rock)
+        _generate_rock();
+
+    if (game.physics.ninja.overlap(ship, rock)) {
+        console.log('/!\\ Collision /!\\');
     }
 }
 
 function render() {
 
-    //game.debug.body(ship);
+    game.debug.body(ship);
+    if (rock)
+        game.debug.body(rock);
+
 }
 
 var game = new Phaser.Game(800, 600, Phaser.AUTO, 'Bubble screen',
