@@ -24,6 +24,7 @@ function create_ship(game) {
 
     game.physics.arcade.enable(ship, Phaser.Physics.ARCADE);
     ship_tween = game.add.tween(ship);
+    return (ship);
 }
 
 
