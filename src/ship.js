@@ -89,7 +89,7 @@ function update_ship(game) {
     else
         velocity.y += (velocity.y > 0 ? -2 : 2);
 
-    _set_ship_direction(game);
+   // _set_ship_direction(game);
 
 
     //Keyboard input

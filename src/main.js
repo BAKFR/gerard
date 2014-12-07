@@ -12,21 +12,24 @@ function create() {
     game.physics.startSystem(Phaser.Physics.P2JS);
     game.physics.p2.setImpactEvents(true);
 
-    background = game.add.sprite(0, 0,'background');
+    background = game.add.sprite(50, 32,'background');
     game.physics.enable(background);
-    background.body.velocity.x = 20;
+    background.body.velocity.x = 0;
     background.body.collideWorldBounds = true;
 
     var ship = create_ship(game);
-    ship.events.onOutOfBounds.add(shipOut.bind(null, ship), this);
 }
 
-function shipOut(ship) {
+function outOfBackground() {
+    ship.destroy();
+    rock.destroy();
     background.destroy();
-    var alive = 0;
-    ship.outOfBoundsKill = true;
+    alive = 0;
     var style = { font: "65px Arial", fill: "#ff0044", align: "center" };
     var text = game.add.text(game.world.centerX, game.world.centerY, "- phaser -\nwith a sprinkle of\npixi dust", style);
+
+    // var text = game.add.text(game.world.centerX, game.world.centerY, "- ÅÄÖ -\nwith a sprinkle of\npixi dust", style);
+
     text.anchor.set(0.5);
 }
 
@@ -52,9 +55,15 @@ function _generate_rock() {
     ship.body.collides(rock, console.log.bind(console));
 }
 
+
+
 function update() {
-    if (alive != 0) {
+    if (alive) {
         update_ship(game);
+
+        if (ship.position.y < background.position.y || ship.position.x < background.position.x || ship.position.y + 16 > background.position.y + 525 || ship.position.x + 16 > background.position.x + 700) {
+            outOfBackground();
+        }
     }
     if (!rock)
         _generate_rock();
