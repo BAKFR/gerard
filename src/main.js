@@ -9,8 +9,8 @@ function preload() {
 
 
 function create() {
-    game.physics.startSystem(Phaser.Physics.NINJA);
-    game.physics.ninja.gravity = 0;
+    game.physics.startSystem(Phaser.Physics.P2JS);
+    game.physics.p2.setImpactEvents(true);
 
     background = game.add.sprite(0, 0,'background');
     game.physics.enable(background);
@@ -46,9 +46,10 @@ function _generate_rock() {
     rock = game.add.sprite(x, y);
     rock.addChild(graphics);
     rock.anchor.setTo(0.5, 0.5);
-    //rock.height = size;
-    //rock.width = size;
-    game.physics.ninja.enableCircle(rock, size / 2);
+    game.physics.p2.enableBody(rock, true);
+    rock.body.setCircle(size / 2);
+
+    ship.body.collides(rock, console.log.bind(console));
 }
 
 function update() {
@@ -58,9 +59,11 @@ function update() {
     if (!rock)
         _generate_rock();
 
-    if (game.physics.ninja.overlap(ship, rock)) {
-        console.log('/!\\ Collision /!\\');
-    }
+    //console.log(ship.type);
+    //console.log(rock.type);
+//    if (game.physics.p2.overlap(ship, rock, console.log.bind(console))) {
+    //    console.log('/!\\ Collision /!\\');
+  //  }
 }
 
 function render() {

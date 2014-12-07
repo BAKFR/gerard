@@ -22,7 +22,9 @@ function create_ship(game) {
     ship.addChild(graphics);
     ship.anchor.setTo(0.5, 0.5);
 
-    game.physics.ninja.enable(ship);
+    game.physics.p2.enable(ship, true);
+
+    var ship_collision_group =
     ship.body.collideWorldBounds = true;
 
     _ship_tween = game.add.tween(ship);
@@ -64,7 +66,7 @@ function _set_ship_direction(game) {
 
     if (angle !== null && _ship_tween.last_dir !== angle) {
         _ship_tween.stop();
-        _ship_tween = game.add.tween(ship);
+        _ship_tween = game.add.tween(ship.body);
         _ship_tween.last_dir = angle;
         _ship_tween.to({angle: angle}, 200, Phaser.Easing.Quadratic.InOut);
         _ship_tween.start();
@@ -76,35 +78,31 @@ function update_ship(game) {
     var keyboard = game.input.keyboard;
     var velocity = ship.body.velocity;
 
-//    console.log(velocity);
-
-
     //The ship always slow down a little.
     if (velocity.x < 2 && velocity.x > -2) {
         velocity.x = 0;
-    }    else {
-        ship.body.moveRight(velocity.x > 0 ? -2 : 2);
-        console.log('???4');
+    } else {
+        velocity.x += (velocity.x > 0 ? -2 : 2);
     }
     if (velocity.y < 2 && velocity.y > -2)
         velocity.y = 0;
     else
-        ship.body.moveDown(velocity.y > 0 ? -2 : 2);
+        velocity.y += (velocity.y > 0 ? -2 : 2);
 
     _set_ship_direction(game);
 
 
     //Keyboard input
     if (keyboard.isDown(Phaser.Keyboard.LEFT)) {
-        ship.body.moveLeft(7);
+        ship.body.velocity.x -= 7;
     }
     if (keyboard.isDown(Phaser.Keyboard.RIGHT)) {
-        ship.body.moveRight(7);
+        ship.body.velocity.x += 7;
     }
     if (keyboard.isDown(Phaser.Keyboard.UP)) {
-        ship.body.moveUp(7);
+        ship.body.velocity.y -= 7;
     }
     if (keyboard.isDown(Phaser.Keyboard.DOWN)) {
-        ship.body.moveDown(7);
+        ship.body.velocity.y += 7;
     }
 }
